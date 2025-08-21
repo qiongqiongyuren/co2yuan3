@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* 碳排放数据监测系统 - styles.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+
+header h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+header p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+.card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(76, 175, 80, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    font-size: 1.4rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e8f5e9;
+}
+
+.card-title i {
+    margin-right: 10px;
+    color: #4CAF50;
+    font-size: 1.6rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #34495e;
+    font-size: 1.05rem;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    background: #f9f9f9;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);
+    background: #fff;
+}
+
+.btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-submit {
+    background: linear-gradient(to right, #4CAF50, #2E7D32);
+    color: white;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(to right, #43A047, #1B5E20);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-reset {
+    background: linear-gradient(to right, #f5f5f5, #e0e0e0);
+    color: #666;
+}
+
+.btn-reset:hover {
+    background: linear-gradient(to right, #e0e0e0, #bdbdbd);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.visualization {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #34495e;
+    font-size: 1.2rem;
+}
+
+.chart-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 20px 10px;
+    border-top: 1px solid #eee;
+    background: #f9fbfd;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.bar {
+    width: 45px;
+    background: linear-gradient(to top, #4CAF50, #8BC34A);
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    transition: all 0.5s ease;
+    box-shadow: 0 3px 6px rgba(76, 175, 80, 0.2);
+}
+
+.bar:hover {
+    opacity: 0.9;
+    transform: scale(1.08);
+    box-shadow: 0 5px 10px rgba(76, 175, 80, 0.3);
+}
+
+.bar-label {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.bar-value {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.data-card {
+    text-align: center;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.data-value {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 15px 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.data-label {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.trend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 6px 15px;
+    border-radius: 20px;
+    background: rgba(236, 239, 241, 0.5);
+}
+
+.trend.up {
+    color: #e74c3c;
+}
+
+.trend.down {
+    color: #27ae60;
+}
+
+.trend i {
+    margin-right: 5px;
+    font-size: 1.2rem;
+}
+
+.carbon-intensity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.intensity-value {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #3498db;
+    margin: 10px 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.compliance {
+    background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+    color: #388e3c;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    margin-top: 15px;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    padding: 25px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 900px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        text-align: left;
+    }
+    
+    .data-card .card-title,
+    .data-card .data-value,
+    .data-card .trend {
+        grid-column: span 2;
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .card {
+        padding: 20px;
+    }
+    
+    .btn-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-card {
+        grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .data-value {
+        font-size: 2.4rem;
+    }
+    
+    .intensity-value {
+        font-size: 3rem;
+    }
+}
