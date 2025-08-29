@@ -69,7 +69,8 @@ exports.register = async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+  const secret = process.env.JWT_SECRET || 'dev_fallback_secret_change_me';
+  const token = jwt.sign({ id: user._id }, secret, {
     expiresIn: '1d'
   });
 

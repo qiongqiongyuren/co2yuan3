@@ -12,7 +12,7 @@ const DualAxisChart = ({ data }) => {
         axisPointer: {
           type: 'cross',
           crossStyle: {
-            color: '#999'
+            color: '#fff' // 确保十字准星颜色为白色
           }
         }
       },
@@ -28,6 +28,9 @@ const DualAxisChart = ({ data }) => {
           data: data.years,
           axisPointer: {
             type: 'shadow'
+          },
+          axisLabel: { // 确保X轴标签文字颜色为白色
+            color: '#fff'
           }
         }
       ],
@@ -73,7 +76,14 @@ const DualAxisChart = ({ data }) => {
     };
     chart.setOption(option);
 
+    const handleResize = () => {
+      chart.resize();
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       chart.dispose();
     };
   }, [data]);

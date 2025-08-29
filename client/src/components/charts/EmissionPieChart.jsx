@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Empty, Row, Col } from 'antd';
+import { Box, Typography, Grid } from '@mui/material'; // 使用MUI组件
 
 const emissionTypes = {
   fossilFuels: '化石燃料燃烧',
@@ -10,7 +10,7 @@ const emissionTypes = {
 };
 
 const EmissionPieChart = ({ data, comparisonData, compareMode }) => {
-  if (!data) return <Empty description="无排放构成数据" />;
+  if (!data) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无排放构成数据</Typography></Box>;
 
   const generatePieOption = (title, chartDataSource) => {
     const chartData = Object.entries(emissionTypes).map(([key, name]) => ({
@@ -19,7 +19,7 @@ const EmissionPieChart = ({ data, comparisonData, compareMode }) => {
     })).filter(d => d.value > 0);
 
     if (chartData.length === 0) {
-      return null;
+      return null; // ECharts will render an empty chart if data is empty, or we can handle it in render functions
     }
 
     return {
@@ -54,7 +54,7 @@ const EmissionPieChart = ({ data, comparisonData, compareMode }) => {
 
   const renderComparisonChart = () => {
     if (!comparisonData || comparisonData.length === 0) {
-      return <Empty description="无同级别单位对比数据" />;
+      return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无同级别单位对比数据</Typography></Box>;
     }
 
     // Calculate average for comparison data
@@ -84,21 +84,21 @@ const EmissionPieChart = ({ data, comparisonData, compareMode }) => {
     const avgOption = generatePieOption('同级别单位平均', avgBreakdown);
 
     return (
-      <Row gutter={16} style={{ height: '100%' }}>
-        <Col span={12} style={{ height: '100%' }}>
-          {ownOption ? <ReactECharts option={ownOption} style={{ height: '100%' }} /> : <Empty description="无本单位数据" />}
-        </Col>
-        <Col span={12} style={{ height: '100%' }}>
-          {avgOption ? <ReactECharts option={avgOption} style={{ height: '100%' }} /> : <Empty description="无对比数据" />}
-        </Col>
-      </Row>
+      <Grid container spacing={2} sx={{ height: '100%' }}> {/* 使用MUI Grid */}
+        <Grid item xs={12} md={6} sx={{ height: '100%' }}>
+          {ownOption ? <ReactECharts option={ownOption} style={{ height: '100%', width: '100%' }} /> : <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无本单位数据</Typography></Box>}
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ height: '100%' }}>
+          {avgOption ? <ReactECharts option={avgOption} style={{ height: '100%', width: '100%' }} /> : <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无对比数据</Typography></Box>}
+        </Grid>
+      </Grid>
     );
   };
 
   const renderSingleChart = () => {
     const option = generatePieOption('本单位排放构成', data);
-    if (!option) return <Empty description="无排放构成数据" />;
-    return <ReactECharts option={option} style={{ height: '100%' }} />;
+    if (!option) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无排放构成数据</Typography></Box>;
+    return <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />;
   };
 
   return (

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Empty } from 'antd';
+import { Box, Typography } from '@mui/material'; // 使用MUI组件
 
 const YearlyEmissionBarChart = ({ yearlyData, comparisonData, compareMode, currentYear }) => {
-  if (!yearlyData || yearlyData.length === 0) return <Empty description="无年度排放数据" />;
+  if (!yearlyData || yearlyData.length === 0) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无年度排放数据</Typography></Box>;
 
   const renderYearlyTrendChart = () => {
     const sortedData = [...yearlyData].sort((a, b) => a.year - b.year);
@@ -39,12 +39,12 @@ const YearlyEmissionBarChart = ({ yearlyData, comparisonData, compareMode, curre
         }
       ]
     };
-    return <ReactECharts option={option} style={{ height: '100%' }} />;
+    return <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />;
   };
 
   const renderComparisonChart = () => {
     const currentYearData = yearlyData.find(d => d.year === currentYear);
-    if (!currentYearData) return <Empty description={`无 ${currentYear} 年的数据`} />;
+    if (!currentYearData) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">{`无 ${currentYear} 年的数据`}</Typography></Box>;
 
     const allData = [{ ...currentYearData, regionName: '本单位' }, ...comparisonData];
     
@@ -84,7 +84,7 @@ const YearlyEmissionBarChart = ({ yearlyData, comparisonData, compareMode, curre
         }
       ]
     };
-    return <ReactECharts option={option} style={{ height: '100%' }} />;
+    return <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />;
   };
 
   return (

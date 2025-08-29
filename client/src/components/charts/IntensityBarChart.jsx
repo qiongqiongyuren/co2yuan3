@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Empty, Row, Col } from 'antd';
+import { Box, Typography, Grid } from '@mui/material'; // 使用MUI组件
 
 const IntensityBarChart = ({ recordData, comparisonData, compareMode }) => {
-  if (!recordData) return <Empty description="无排放强度数据" />;
+  if (!recordData) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无排放强度数据</Typography></Box>;
 
   const { perCapita, perArea } = recordData;
 
@@ -31,12 +31,12 @@ const IntensityBarChart = ({ recordData, comparisonData, compareMode }) => {
         barWidth: '60%',
       }]
     };
-    return <ReactECharts option={option} style={{ height: '100%' }} />;
+    return <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />;
   };
 
   const renderComparisonChart = () => {
     if (!comparisonData || comparisonData.length === 0) {
-      return <Empty description="无同级别单位对比数据" />;
+      return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><Typography variant="body1" color="textSecondary">无同级别单位对比数据</Typography></Box>;
     }
     
     const allData = [
@@ -73,14 +73,14 @@ const IntensityBarChart = ({ recordData, comparisonData, compareMode }) => {
       };
 
     return (
-      <Row gutter={16} style={{ height: '100%' }}>
-        <Col span={12} style={{ height: '100%' }}>
-          <ReactECharts option={personOption} style={{ height: '100%' }} />
-        </Col>
-        <Col span={12} style={{ height: '100%' }}>
-          <ReactECharts option={areaOption} style={{ height: '100%' }} />
-        </Col>
-      </Row>
+      <Grid container spacing={2} sx={{ height: '100%' }}> {/* 使用MUI Grid */}
+        <Grid item xs={12} md={6} sx={{ height: '100%' }}>
+          <ReactECharts option={personOption} style={{ height: '100%', width: '100%' }} />
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ height: '100%' }}>
+          <ReactECharts option={areaOption} style={{ height: '100%', width: '100%' }} />
+        </Grid>
+      </Grid>
     );
   };
 

@@ -30,13 +30,17 @@ const DonutChart = ({ data }) => {
           },
           label: {
             show: false,
-            position: 'center'
+            position: 'center',
+            textStyle: { // 确保标签文字颜色为白色
+              color: '#fff'
+            }
           },
           emphasis: {
             label: {
               show: true,
               fontSize: '20',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              color: '#fff' // 确保高亮标签文字颜色为白色
             }
           },
           labelLine: {
@@ -48,10 +52,17 @@ const DonutChart = ({ data }) => {
     };
     chart.setOption(option);
 
+    const handleResize = () => {
+      chart.resize();
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       chart.dispose();
     };
-  }, [data]);
+  }, [data]); // Re-run effect if data changes
 
   return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />;
 };

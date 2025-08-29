@@ -27,11 +27,17 @@ const StackedBarChart = ({ data }) => {
         containLabel: true
       },
       xAxis: {
-        type: 'value'
+        type: 'value',
+        axisLabel: { // 确保X轴标签文字颜色为白色
+          color: '#fff'
+        }
       },
       yAxis: {
         type: 'category',
-        data: data.years
+        data: data.years,
+        axisLabel: { // 确保Y轴标签文字颜色为白色
+          color: '#fff'
+        }
       },
       series: [
         {
@@ -74,7 +80,14 @@ const StackedBarChart = ({ data }) => {
     };
     chart.setOption(option);
 
+    const handleResize = () => {
+      chart.resize();
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       chart.dispose();
     };
   }, [data]);

@@ -163,20 +163,32 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
             >
               {regions.map((city) => (
                 <div key={city.code}>
-                  <ListItem 
-                    onClick={() => handleCityClick(city.code)}
-                    onDoubleClick={() => handleRegionSelect(city.code)}
-                  >
-                    <ListItemText primary={city.name} />
-                    {city.children && city.children.length > 0 ? (open[city.code] ? <ExpandLess /> : <ExpandMore />) : null}
+                  <ListItem>
+                    <Box 
+                      onClick={(event) => { // 单击用于展开/折叠
+                        event.stopPropagation(); // 阻止事件冒泡，防止Select意外关闭
+                        handleCityClick(city.code);
+                      }} 
+                      onDoubleClick={(event) => { // 双击用于选择城市
+                        event.stopPropagation(); // 阻止事件冒泡，防止Select意外关闭
+                        handleRegionSelect(city.code);
+                      }}
+                      sx={{ display: 'flex', alignItems: 'center', width: '100%', cursor: 'pointer' }} // 确保整个区域可点击
+                    >
+                      <ListItemText primary={city.name} />
+                      {Array.isArray(city.children) && city.children.length > 0 ? (open[city.code] ? <ExpandLess /> : <ExpandMore />) : null}
+                    </Box>
                   </ListItem>
                   <Collapse in={open[city.code]} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      {city.children && city.children.map((district) => (
+                      {Array.isArray(city.children) && city.children.map((district) => ( // 确保 children 是数组
                         <ListItem 
                           key={district.code} 
                           sx={{ pl: 4 }}
-                          onClick={() => handleRegionSelect(district.code)}
+                          onClick={(event) => { // 单击用于选择区县
+                            event.stopPropagation(); // 阻止事件冒泡，防止Select意外关闭
+                            handleRegionSelect(district.code);
+                          }}
                         >
                           <ListItemText primary={district.name} />
                         </ListItem>
