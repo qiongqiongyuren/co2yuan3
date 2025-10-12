@@ -13,6 +13,7 @@ const LoginPage = ({ onLogin }) => {
   const handleLogin = async (credentials) => {
     const res = await axios.post('/api/auth/login', credentials);
     if (res.data.success) {
+      localStorage.setItem('user', JSON.stringify(res.data.user));
       onLogin(res.data.token);
     }
   };
@@ -20,7 +21,8 @@ const LoginPage = ({ onLogin }) => {
   const handleRegister = async (userData) => {
     const res = await axios.post('/api/auth/register', userData);
     if (res.data.success) {
-      onLogin(res.data.token);
+      alert('注册成功');
+      setIsLogin(true);
     }
   };
 
@@ -56,4 +58,4 @@ const LoginPage = ({ onLogin }) => {
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

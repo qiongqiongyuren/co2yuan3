@@ -97,11 +97,11 @@ export const useCarbonData = () => {
 
   const handleExport = async () => {
     try {
-      const res = await axios.get('/api/reports/csv', { responseType: 'blob' });
+      const res = await axios.get('/api/reports/excel', { responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
-      const filename = res.headers['content-disposition']?.split('filename=')[1]?.replace(/"/g, '') || 'report.csv';
+      const filename = res.headers['content-disposition']?.split('filename=')[1]?.replace(/"/g, '') || 'carbon_report.xlsx';
       link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();

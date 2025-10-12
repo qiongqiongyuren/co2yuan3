@@ -7,7 +7,12 @@ const { getRegionFullNameByCode } = require('../utils/regionData');
 // @access  Private
 exports.submitData = async (req, res, next) => {
   try {
-    const { year, regionCode, activityData } = req.body;
+    let { year, regionCode, activityData } = req.body;
+
+    // If not root user, enforce regionCode from user's registered region
+    if (req.user.email !== 'root@root.com' && req.user.region) {
+      regionCode = req.user.region;
+    }
 
     // Basic validation
     if (!year || !regionCode || !activityData) {
@@ -46,7 +51,11 @@ exports.submitData = async (req, res, next) => {
 exports.getData = async (req, res, next) => {
   try {
     const { year, regionCode } = req.query;
-    const query = { account: req.user.id };
+    let query = {};
+    // 如果不是 root 用户，则只查询自己的数据
+    if (req.user.email !== 'root@root.com') {
+      query.account = req.user.id;
+    }
 
     if (year) {
       query.year = year;
@@ -97,8 +106,8 @@ exports.updateDataById = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'No data found' });
     }
 
-    // Make sure user is the owner of the data
-    if (data.account.toString() !== req.user.id) {
+    // Make sure user is the owner of the data, or user is root
+    if (data.account.toString() !== req.user.id && req.user.email !== 'root@root.com') {
       return res.status(401).json({ success: false, error: 'Not authorized to update this data' });
     }
 
@@ -144,8 +153,8 @@ exports.deleteDataById = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'No data found' });
     }
 
-    // Make sure user is the owner of the data
-    if (data.account.toString() !== req.user.id) {
+    // Make sure user is the owner of the data, or user is root
+    if (data.account.toString() !== req.user.id && req.user.email !== 'root@root.com') {
       return res.status(401).json({ success: false, error: 'Not authorized to delete this data' });
     }
 

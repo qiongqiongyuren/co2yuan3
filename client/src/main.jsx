@@ -30,7 +30,7 @@ const theme = createTheme({
         ::selection { background: rgba(255,255,255,0.35); color: #000; }
         ::-moz-selection { background: rgba(255,255,255,0.35); color: #000; }
         /* 输入/文本域默认填充颜色，避免渲染差异 */
-        input, textarea, .MuiInputBase-input { -webkit-text-fill-color: #fff; }
+        input, textarea, .MuiInputBase-input { WebkitTextFillColor: '#fff' }
         /* 输入/文本域选中：半透明白底+黑字，并强制文字填充为黑色，防止被高亮遮盖 */
         input::selection,
         textarea::selection,
@@ -38,7 +38,7 @@ const theme = createTheme({
         .MuiOutlinedInput-input::selection {
           background: rgba(255,255,255,0.35) !important;
           color: #000 !important;
-          -webkit-text-fill-color: #000 !important;
+          WebkitTextFillColor: '#000 !important'
         }
       `,
     },
@@ -59,7 +59,7 @@ const theme = createTheme({
           caretColor: '#fff', // 默认光标颜色为白色
           '&.Mui-focused': {
             color: '#000', // 焦点时文字变为黑色
-            '-webkit-text-fill-color': '#000', // 强制填充颜色为黑色
+            'WebkitTextFillColor': '#000', // 强制填充颜色为黑色
             caretColor: '#000', // 焦点时光标颜色为黑色
           },
           '::selection': {
@@ -93,7 +93,7 @@ const theme = createTheme({
           color: '#fff', // 默认文字颜色保持白色
           '&.Mui-focused': {
             color: '#000', // 焦点时文字变为黑色
-            '-webkit-text-fill-color': '#000', // 强制填充颜色为黑色
+            'WebkitTextFillColor': '#000', // 强制填充颜色为黑色
           },
           '::selection': {
             background: 'rgba(255,255,255,0.35)',
@@ -120,7 +120,7 @@ const theme = createTheme({
           color: '#fff', // 默认文字颜色保持白色
           '&.Mui-focused': {
             color: '#000', // 焦点时文字变为黑色
-            '-webkit-text-fill-color': '#000', // 强制填充颜色为黑色
+            'WebkitTextFillColor': '#000', // 强制填充颜色为黑色
           },
           '::selection': {
             background: 'rgba(255,255,255,0.35)',

@@ -6,6 +6,7 @@ import DataScreenPage from './pages/DataScreenPage';
 import axios from 'axios';
 import { Box, CircularProgress } from '@mui/material';
 import VideoBackground from './components/VideoBackground';
+import AiChat from './components/AiChat'; // 导入新组件
 
 function App() {
     const [token, setToken] = useState(null);
@@ -26,6 +27,7 @@ function App() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setToken(null);
     };
 
@@ -63,6 +65,8 @@ function App() {
                 <Route path="/data-screen" element={token ? <DataScreenPage /> : <Navigate to="/login" />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
+            {/* 在所有页面的底部渲染AI助手 */}
+            <AiChat />
         </Router>
     );
 }

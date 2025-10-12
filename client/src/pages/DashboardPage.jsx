@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Container, Typography, Button, Card, CardContent, CardHeader,
@@ -13,6 +13,7 @@ import HistoricalDataTable from '../components/HistoricalDataTable';
 import ChartAnalysis from '../components/ChartAnalysis';
 import SearchBar from '../components/SearchBar';
 import EmissionMapChart from '../components/charts/EmissionMapChart';
+import UserManagementPage from './UserManagementPage'; // Import the new page
 
 const MotionBox = motion(Box);
 
@@ -36,6 +37,13 @@ const DashboardPage = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [showHistory, setShowHistory] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    // Retrieve user from localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+    setCurrentUser(user);
+  }, []);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -48,6 +56,8 @@ const DashboardPage = ({ onLogout }) => {
       document.getElementById('chart-analysis-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
+
+  const isRoot = currentUser && currentUser.email === 'root@root.com';
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -69,8 +79,10 @@ const DashboardPage = ({ onLogout }) => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
           <Tabs value={activeTab} onChange={handleTabChange} centered>
             <Tab label="数据填报" />
-            <Tab label="数据看板" />
+            <Tab label="历史提交记录" />
+            <Tab label="数据地图" />
             <Tab label="数据大屏" component={Link} to="/data-screen" />
+            {isRoot && <Tab label="权限管理" />}
           </Tabs>
         </Box>
 
@@ -87,14 +99,8 @@ const DashboardPage = ({ onLogout }) => {
             )}
 
             {activeTab === 1 && (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}> {/* 恢复原始Box样式 */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Card>
-                  <CardHeader title="排放地图" />
-                  <CardContent sx={{ height: '75vh' }}>
-                    <EmissionMapChart />
-                  </CardContent>
-                </Card>
-                <Card> {/* 恢复原始Card样式 */}
                   <CardHeader
                     title="历史提交数据"
                     action={
@@ -103,8 +109,8 @@ const DashboardPage = ({ onLogout }) => {
                       </Button>
                     }
                   />
-                  <Collapse in={showHistory}> {/* 恢复原始Collapse样式 */}
-                    <CardContent> {/* 恢复原始CardContent样式 */}
+                  <Collapse in={showHistory}>
+                    <CardContent>
                       <SearchBar
                         regions={regions}
                         onSearch={handleSearch}
@@ -127,6 +133,17 @@ const DashboardPage = ({ onLogout }) => {
                   allData={allSubmittedData}
                 />
               </Box>
+            )}
+            {activeTab === 2 && (
+              <Card>
+                <CardHeader title="排放地图" />
+                <CardContent sx={{ height: '80vh' }}>
+                  <EmissionMapChart />
+                </CardContent>
+              </Card>
+            )}
+             {activeTab === 4 && isRoot && (
+              <UserManagementPage />
             )}
           </MotionBox>
         </AnimatePresence>

@@ -29,6 +29,11 @@ const AccountSchema = new mongoose.Schema({
   region: {
     type: String,
     required: [true, 'Please provide a region']
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'editor', 'viewer'],
+    default: 'viewer'
   }
 });
 

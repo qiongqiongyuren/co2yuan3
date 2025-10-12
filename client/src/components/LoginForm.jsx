@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 
 const LoginForm = ({ onLogin, onSwitchToRegister }) => {
-  const [account, setAccount] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -15,7 +15,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
     setError('');
     try {
       // This logic will be passed in via onLogin prop from the parent LoginPage
-      await onLogin({ account, password });
+      await onLogin({ email, password });
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     } finally {
@@ -30,17 +30,13 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
         margin="normal"
         required
         fullWidth
-        id="account"
-        label="账号 (8位)"
-        name="account"
-        autoComplete="username"
+        id="email"
+        label="邮箱"
+        name="email"
+        autoComplete="email"
         autoFocus
-        value={account}
-        onChange={(e) => setAccount(e.target.value)}
-        inputProps={{
-          pattern: "\\d{8}",
-          title: "请输入8位数字账号"
-        }}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <TextField
         margin="normal"
@@ -50,13 +46,9 @@ const LoginForm = ({ onLogin, onSwitchToRegister }) => {
         label="密码 (6位)"
         type="password"
         id="password"
-        autoComplete="current-password"
+        autoComplete="off"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        inputProps={{
-          minLength: "6",
-          title: "请输入至少6位密码"
-        }}
       />
       <Button
         type="submit"

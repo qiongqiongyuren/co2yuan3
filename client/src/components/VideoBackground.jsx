@@ -25,7 +25,7 @@ const VideoBackground = () => {
           objectFit: 'cover',
         }}
       >
-        <source src="/Video/连贯动图已准备就绪.mp4" type="video/mp4" />
+        <source src="/Video/图片转动图.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <Box

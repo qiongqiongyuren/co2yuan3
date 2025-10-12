@@ -34,14 +34,14 @@ const EmissionMapChart = () => {
                         max: Math.max(...mapSeriesData.map(d => parseFloat(d.value) || 0), 1),
                         calculable: true,
                         inRange: { color: ['#E0F3F8', '#ABD9E9', '#74ADD1', '#4575B4', '#313695'].reverse() },
-                        textStyle: { color: '#333' }
+                        textStyle: { color: '#fff' }
                     },
                     series: [{
                         name: '人均排放强度',
                         type: 'map',
                         map: mapName,
                         roam: true,
-                        label: { show: true, formatter: '{b}', color: '#000', fontSize: 12 },
+                        label: { show: true, formatter: '{b}', color: '#fff', fontSize: 12 },
                         emphasis: { label: { show: true }, itemStyle: { areaColor: '#FFD700' } },
                         data: mapSeriesData
                     }]

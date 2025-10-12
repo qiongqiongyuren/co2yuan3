@@ -9,9 +9,22 @@ import factors from '../utils/emissionFactors';
 const LOCAL_STORAGE_KEY = 'carbon_form_data';
 
 const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false }) => {
+  // Determine initial regionCode based on user data from localStorage
+  const getInitialRegionCode = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      // If not root user and has a region, use it as default
+      if (user.email !== 'root@root.com' && user.region) {
+        return user.region;
+      }
+    }
+    return ''; // Default to empty if no specific user region or is root
+  };
+
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
-      regionCode: '',
+      regionCode: getInitialRegionCode(), // Initialize regionCode here
       year: '',
       ...formSections.flatMap(s => s.panels ? s.panels.flatMap(p => p.fields) : s.fields).reduce((acc, field) => {
         acc[field.name.join('.')] = '';
@@ -21,6 +34,8 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
   });
   const [singleItemEmissions, setSingleItemEmissions] = useState({});
   const [open, setOpen] = useState({});
+  const [currentUserRegion, setCurrentUserRegion] = useState(''); // State for user's region
+  const [isRootUser, setIsRootUser] = useState(false); // State for root user status
 
   const watchedValues = watch();
 
@@ -33,6 +48,21 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
   };
 
   useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    let tempUserRegion = '';
+    let tempIsRootUser = false;
+
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      if (user.email === 'root@root.com') {
+        tempIsRootUser = true;
+      } else {
+        tempUserRegion = user.region;
+      }
+    }
+    setCurrentUserRegion(tempUserRegion);
+    setIsRootUser(tempIsRootUser);
+
     if (isEditMode && initialValues) {
       const flattenedData = {
         year: initialValues.year,
@@ -50,8 +80,9 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
       if (savedData) {
         reset(JSON.parse(savedData));
       }
+      // No need to setValue('regionCode') here, as it's handled by defaultValues
     }
-  }, [initialValues, isEditMode, reset]);
+  }, [initialValues, isEditMode, reset, setValue]); // Removed currentUserRegion, isRootUser from dependency array as they are set once
 
   useEffect(() => {
     if (!isEditMode) {
@@ -155,10 +186,22 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
               {...field}
               labelId="region-select-label"
               label="行政区划"
-              disabled={isEditMode}
+              disabled={isEditMode || (!isRootUser && currentUserRegion)} // Disable if in edit mode OR (not root user AND has a region)
               renderValue={(selected) => {
+                if (!regions || regions.length === 0) {
+                  // If regions are not loaded yet, display the raw code or a loading indicator
+                  return selected || '加载中...';
+                }
                 const selectedRegion = regions.flatMap(c => [c, ...(c.children || [])]).find(r => r.code === selected);
-                return selectedRegion ? selectedRegion.name : '';
+                return selectedRegion ? selectedRegion.name : selected; // Fallback to code if name not found
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: '#1e1e1e !important', // 使用具体颜色值并提升优先级
+                    backgroundImage: 'none', // 确保没有背景图片干扰
+                  },
+                },
               }}
             >
               {regions.map((city) => (
