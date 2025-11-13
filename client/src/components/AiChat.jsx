@@ -25,7 +25,55 @@ const chatHeaderStyle = {
     cursor: 'pointer',
 };
 
-// ... 省略其他样式 ...
+const chatMessagesStyle = {
+    flexGrow: 1,
+    overflowY: 'auto',
+    padding: '10px',
+    backgroundColor: '#f9f9f9',
+};
+
+const userMessageStyle = {
+    textAlign: 'right',
+    backgroundColor: '#dcf8c6',
+    borderRadius: '10px',
+    padding: '8px',
+    margin: '5px 0',
+    maxWidth: '80%',
+    marginLeft: 'auto',
+};
+
+const aiMessageStyle = {
+    textAlign: 'left',
+    backgroundColor: '#e0e0e0',
+    borderRadius: '10px',
+    padding: '8px',
+    margin: '5px 0',
+    maxWidth: '80%',
+    marginRight: 'auto',
+};
+
+const chatInputContainerStyle = {
+    display: 'flex',
+    borderTop: '1px solid #ccc',
+    padding: '10px',
+};
+
+const chatInputStyle = {
+    flexGrow: 1,
+    border: '1px solid #eee',
+    borderRadius: '5px',
+    padding: '8px',
+    marginRight: '10px',
+};
+
+const chatSendButtonStyle = {
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    padding: '8px 15px',
+    cursor: 'pointer',
+};
 
 function AiChat() {
     const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +111,32 @@ function AiChat() {
             <div style={chatHeaderStyle} onClick={() => setIsOpen(false)}>
                 <h4>AI 助手</h4>
             </div>
-            {/* 聊天历史和输入框的 JSX ... */}
+            <div style={chatMessagesStyle}>
+                {messages.map((msg, index) => (
+                    <div key={index} style={msg.role === 'user' ? userMessageStyle : aiMessageStyle}>
+                        {msg.content}
+                    </div>
+                ))}
+                {isLoading && <div style={aiMessageStyle}>AI 助手正在思考...</div>}
+            </div>
+            <div style={chatInputContainerStyle}>
+                <input
+                    type="text"
+                    style={chatInputStyle}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSend();
+                        }
+                    }}
+                    placeholder="输入你的问题..."
+                    disabled={isLoading}
+                />
+                <button onClick={handleSend} style={chatSendButtonStyle} disabled={isLoading}>
+                    发送
+                </button>
+            </div>
         </div>
     );
 }

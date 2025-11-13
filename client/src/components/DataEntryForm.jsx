@@ -4,8 +4,9 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useForm, Controller } from 'react-hook-form';
 import { formSections } from './formFields';
-import factors from '../utils/emissionFactors';
+import axios from 'axios'; // 导入 axios
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const LOCAL_STORAGE_KEY = 'carbon_form_data';
 
 const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false }) => {
@@ -21,6 +22,10 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
     }
     return ''; // Default to empty if no specific user region or is root
   };
+
+  const [emissionFactors, setEmissionFactors] = useState({}); // 新增：存储从数据库获取的排放因子
+  const [factorsLoading, setFactorsLoading] = useState(true); // 新增：排放因子加载状态
+  const [factorsError, setFactorsError] = useState(null); // 新增：排放因子错误状态
 
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
@@ -47,6 +52,7 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
     setValue('regionCode', regionCode);
   };
 
+  // Effect for fetching user info
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     let tempUserRegion = '';
@@ -62,7 +68,43 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
     }
     setCurrentUserRegion(tempUserRegion);
     setIsRootUser(tempIsRootUser);
+  }, []);
 
+  // Effect for fetching emission factors
+  useEffect(() => {
+    const fetchEmissionFactors = async () => {
+      setFactorsLoading(true);
+      setFactorsError(null);
+      try {
+        const response = await axios.get(`${API_BASE_URL}/emission-factors`);
+        const formattedFactors = {};
+        response.data.forEach(factor => {
+          if (!formattedFactors[factor.category]) {
+            formattedFactors[factor.category] = {};
+          }
+          if (factor.category === 'mobile' && (factor.type === 'fuel' || factor.type === 'mileage')) {
+            if (!formattedFactors[factor.category][factor.type]) {
+              formattedFactors[factor.category][factor.type] = {};
+            }
+            formattedFactors[factor.category][factor.type][factor.name] = factor.value;
+          } else {
+            formattedFactors[factor.category][factor.name] = factor.value;
+          }
+        });
+        setEmissionFactors(formattedFactors);
+      } catch (err) {
+        setFactorsError('获取排放因子失败');
+        console.error('Error fetching emission factors:', err);
+      } finally {
+        setFactorsLoading(false);
+      }
+    };
+
+    fetchEmissionFactors();
+  }, []);
+
+  // Effect for form reset based on edit mode or local storage
+  useEffect(() => {
     if (isEditMode && initialValues) {
       const flattenedData = {
         year: initialValues.year,
@@ -80,9 +122,8 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
       if (savedData) {
         reset(JSON.parse(savedData));
       }
-      // No need to setValue('regionCode') here, as it's handled by defaultValues
     }
-  }, [initialValues, isEditMode, reset, setValue]); // Removed currentUserRegion, isRootUser from dependency array as they are set once
+  }, [initialValues, isEditMode, reset, setValue]);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -94,20 +135,20 @@ const DataEntryForm = ({ regions, onSubmit, initialValues, isEditMode = false })
 
   const calculateEmission = (field) => {
     const value = getNestedValue(watchedValues, field.name);
-    if (!value || value <= 0) return 0;
+    if (!value || value <= 0 || factorsLoading || factorsError) return 0; // 增加加载和错误检查
 
     const [category, type, fuel] = field.name;
     let emission = 0;
     
-    if (category === 'fossilFuels' && factors[type] && factors[type][fuel]) {
-        const factor = factors[type][fuel];
+    if (category === 'fossilFuels' && emissionFactors[type] && emissionFactors[type][fuel]) {
+        const factor = emissionFactors[type][fuel];
         emission = type === 'gas' ? (value / 10000) * factor : value * factor;
-    } else if (category === 'mobileSources' && factors.mobile?.[type]?.[fuel]) {
-        const factor = factors.mobile[type][fuel];
+    } else if (category === 'mobileSources' && emissionFactors.mobile?.[type]?.[fuel]) {
+        const factor = emissionFactors.mobile[type][fuel];
         emission = (value * factor) / 1000;
-    } else if (category === 'indirectEmissions' && factors.indirect) {
-        if (type === 'purchasedElectricity') emission = value * 10 * factors.indirect.electricity;
-        else if (type === 'purchasedHeat') emission = value * (factors.indirect.heat / 1000);
+    } else if (category === 'indirectEmissions' && emissionFactors.indirect) {
+        if (type === 'purchasedElectricity') emission = value * 10 * emissionFactors.indirect.electricity;
+        else if (type === 'purchasedHeat') emission = value * (emissionFactors.indirect.heat / 1000);
     }
     return emission;
   };

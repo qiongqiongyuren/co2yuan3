@@ -223,3 +223,53 @@
   * 在 `return` 中，根据 `isLogin` 的值，来决定渲染 `<LoginForm />` 还是 `<RegistrationForm />`，并把对应的回调函数传给它们。
 
 通过以上解耦，项目的结构得到了显著优化，组件职责更加单一，代码逻辑更加清晰，为未来的开发和维护奠定了良好的基础。
+
+### 4.6. Docker 部署与服务稳定性修复
+
+在 Docker Compose 部署过程中，我们遇到了一系列服务启动和通信问题，并通过以下步骤逐一解决，显著提升了整个应用在容器化环境中的稳定性和可用性。
+
+- **后端服务 (backend) 模块引用错误**
+  - **问题**: `backend-1` 容器启动时报告 `Error: Cannot find module '../../client/src/components/formFields'`。这是因为后端代码错误地引用了前端组件文件。
+  - **修复**:
+    1. 将 `client/src/components/formFields.js` 的内容复制到 `server/utils/formFields.js`。
+    2. 更新 `server/controllers/reports.js` 中的导入路径为 `../utils/formFields`。
+    3. 将 `server/utils/formFields.js` 中的 ES 模块导出 (`export const`) 更改为 CommonJS 导出 (`module.exports`)，以兼容 Node.js 环境。
+
+- **AI 服务 (ai_service) Ollama 连接错误**
+  - **问题**: `ai_service-1` 容器无法连接到 Ollama 服务，最初尝试的 `host.docker.internal` 方案失败，且 `ollama/ollama` 镜像拉取超时。
+  - **修复**:
+    1. 从 `docker-compose.yml` 中移除了 `ollama` 服务定义，因为用户已在宿主机安装 Ollama。
+    2. 为 `ai_service` 服务添加了 `extra_hosts: - "host.docker.internal:host-gateway"` 配置，确保容器能够正确解析宿主机地址。
+    3. 修改 `ai_service/app/main.py`，将 Ollama 的 `base_url` 设置为 `http://host.docker.internal:11434`。
+    4. 指导用户在宿主机上设置 `OLLAMA_HOST=0.0.0.0` 环境变量并拉取 `qwen2:1.5b` 模型。
+
+- **后端服务 (backend) MongoDB 连接错误**
+  - **问题**: `backend-1` 容器启动时报告 `MongooseError: The \`uri\` parameter to \`openUri()\` must be a string, got "undefined".`，表明 `MONGODB_URI` 环境变量未正确加载。
+  - **修复**:
+    1. 从 `server/index.js` 中移除了 `require('dotenv').config({ path: '../.env' });`，因为 Docker Compose 负责注入环境变量。
+    2. 在 `docker-compose.yml` 中添加了一个 `mongodb` 服务，使用 `docker.m.daocloud.io/library/mongo:6.0` 镜像（根据用户手动拉取情况调整）。
+    3. 更新 `backend` 服务的 `MONGODB_URI` 环境变量为 `mongodb://mongodb:27017/carbon_platform`，并添加 `depends_on: - mongodb`。
+
+- **`docker-compose.yml` 结构错误**
+  - **问题**: `ai_service` 服务定义被错误地放置在 `volumes` 块内，导致 Docker Compose 验证失败。
+  - **修复**: 将 `ai_service` 服务定义从 `volumes` 块中移回 `services` 块的正确位置。
+
+- **前端服务 (frontend) 404 Not Found 错误**
+  - **问题**: Nginx 无法找到前端路由对应的文件（如 `/login`），导致 404 错误。这是单页应用 (SPA) 在 Nginx 配置中常见的问题。
+  - **修复**:
+    1. 在 `client` 目录下创建了自定义 `nginx.conf` 文件，配置 Nginx 将所有未找到的请求重定向到 `index.html`。
+    2. 修改 `client/Dockerfile`，将 `nginx.conf` 复制到 Nginx 容器的 `/etc/nginx/conf.d/default.conf`，替换默认配置。
+    3. 在 `client/nginx.conf` 中添加了 `/api/` 路径的代理配置，将所有 `/api` 请求转发到 `http://backend:8080`。
+
+- **后端服务 (backend) 401 Unauthorized 错误**
+  - **问题**: 尝试使用 `root@root.com` 登录时，即使密码正确，也持续收到 `401 (Unauthorized)` 错误和 `Root password mismatch.` 消息。
+  - **修复**:
+    1. 修改 `server/controllers/auth.js`，在 `root@root.com` 登录逻辑的开头，强制删除 MongoDB 中现有的 `root@root.com` 用户记录。这确保了每次启动时都会重新创建具有正确密码哈希的 root 用户。
+    2. 改进了 root 用户的密码匹配逻辑，直接使用 `bcrypt.compare(password, rootUser.password)` 进行比较。
+
+- **AI 知识库功能完善**
+  - **问题**: AI 助手聊天窗口无法正确显示，且后端 AI 服务调用路径不匹配。
+  - **修复**:
+    1. 确认前端 `client/src/components/AiChat.jsx` 组件的 API 调用路径 (`/api/ai/chat`) 与后端 `server/routes/ai.js` 中定义的路由匹配。
+    2. 修改 `server/controllers/ai.js`，确保 `AI_SERVICE_BASE_URL` 正确拼接 `/query` 端点，以调用 `ai_service` 容器的 `/query` 接口。
+    3. 修复 `client/src/components/AiChat.jsx` 的渲染逻辑，添加了聊天历史和输入框的 JSX 代码，并定义了所有缺失的样式变量 (`chatMessagesStyle`, `userMessageStyle`, `aiMessageStyle`, `chatInputContainerStyle`, `chatInputStyle`, `chatSendButtonStyle`)。

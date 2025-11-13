@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import DataScreenPage from './pages/DataScreenPage';
+import EmissionFactorManagementPage from './pages/EmissionFactorManagementPage'; // 导入排放因子管理页面
+import DataUploadPage from './pages/DataUploadPage'; // 导入数据上传页面
 import axios from 'axios';
 import { Box, CircularProgress } from '@mui/material';
 import VideoBackground from './components/VideoBackground';
@@ -63,6 +65,8 @@ function App() {
                 <Route path="/login" element={!token ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
                 <Route path="/dashboard" element={token ? <DashboardPage onLogout={handleLogout} /> : <Navigate to="/login" />} />
                 <Route path="/data-screen" element={token ? <DataScreenPage /> : <Navigate to="/login" />} />
+                <Route path="/emission-factors" element={token ? <EmissionFactorManagementPage /> : <Navigate to="/login" />} /> {/* 添加排放因子管理路由 */}
+                <Route path="/upload-data" element={token ? <DataUploadPage /> : <Navigate to="/login" />} /> {/* 添加数据上传路由 */}
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
             {/* 在所有页面的底部渲染AI助手 */}

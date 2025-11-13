@@ -12,7 +12,7 @@ query_engine = None
 async def lifespan(app: FastAPI):
     global query_engine
     print("AI 服务启动中，正在加载模型和索引...")
-    Settings.llm = Ollama(model="qwen2:1.5b", request_timeout=120.0)
+    Settings.llm = Ollama(model="qwen2:1.5b", base_url="http://host.docker.internal:11434", request_timeout=120.0)
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-zh-v1.5")
     documents = SimpleDirectoryReader(input_dir="./data").load_data()
     index = VectorStoreIndex.from_documents(documents)

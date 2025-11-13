@@ -25,7 +25,8 @@ COPY ./requirements.txt /code/requirements.txt
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
  && pip config set install.trusted-host pypi.tuna.tsinghua.edu.cn \
  && pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir --retries 10 --timeout 120 -r /code/requirements.txt
+ && pip install --no-cache-dir --retries 10 --timeout 120 -r /code/requirements.txt \
+ && pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 # 复制应用代码和数据
 COPY ./app /code/app
@@ -36,7 +37,3 @@ EXPOSE 8000
 
 # 启动 uvicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-
-
-
-

@@ -1,5 +1,5 @@
 const CarbonData = require('../models/CarbonData');
-const { formSections } = require('../../client/src/components/formFields'); // 导入前端表单字段定义
+const { formSections } = require('../utils/formFields'); // 导入前端表单字段定义
 const { getRegionFullNameByCode } = require('../utils/regionData'); // 导入获取地区全名的方法
 const ExcelJS = require('exceljs'); // 导入 exceljs 库
 
