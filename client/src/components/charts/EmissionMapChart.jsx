@@ -31,7 +31,7 @@ const EmissionMapChart = () => {
                     tooltip: { trigger: 'item', formatter: '{b}<br/>人均排放强度: {c} (tCO₂/人)' },
                     visualMap: {
                         min: 0,
-                        max: Math.max(...mapSeriesData.map(d => parseFloat(d.value) || 0), 1),
+                        max: Math.max(...mapSeriesData.map(d => parseFloat(d.value || '0') || 0), 1), // 确保d.value是字符串，避免parseFloat(undefined)
                         calculable: true,
                         inRange: { color: ['#E0F3F8', '#ABD9E9', '#74ADD1', '#4575B4', '#313695'].reverse() },
                         textStyle: { color: '#fff' }

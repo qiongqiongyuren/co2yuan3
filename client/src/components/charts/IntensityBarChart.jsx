@@ -41,17 +41,21 @@ const IntensityBarChart = ({ recordData, comparisonData, compareMode }) => {
     
     const allData = [
       { ...recordData, regionName: '本单位' },
-      ...comparisonData.map(d => ({...d.calculatedEmissions.intensity, regionName: d.regionName}))
+      ...comparisonData.map(d => ({
+        perCapita: d.calculatedEmissions?.emissionIntensityByPerson,
+        perArea: d.calculatedEmissions?.emissionIntensityByArea,
+        regionName: d.regionName
+      }))
     ];
 
     const personIntensityData = allData.map(d => ({
       name: d.regionName,
-      value: d.perCapita?.toFixed(4) || 0,
+      value: (d.perCapita || 0).toFixed(4),
     })).sort((a, b) => b.value - a.value);
 
     const areaIntensityData = allData.map(d => ({
         name: d.regionName,
-        value: d.perArea?.toFixed(4) || 0,
+        value: (d.perArea || 0).toFixed(4),
     })).sort((a, b) => b.value - a.value);
 
     const personOption = {

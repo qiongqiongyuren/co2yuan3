@@ -53,7 +53,7 @@ const HistoricalDataTable = ({ data, loading, onSelect, onDelete, onSaveEdit }) 
               <TableRow hover>
                 <TableCell>{record.year}</TableCell>
                 <TableCell>{record.regionName}</TableCell>
-                <TableCell>{record.calculatedEmissions.totalEmissions.toFixed(2)}</TableCell>
+                <TableCell>{(record.calculatedEmissions?.totalEmissions || 0).toFixed(2)}</TableCell>
                 <TableCell>
                   <Button size="small" onClick={() => onSelect(record)}>图表</Button>
                   <IconButton size="small" onClick={() => onDelete(record._id)}><Delete /></IconButton>

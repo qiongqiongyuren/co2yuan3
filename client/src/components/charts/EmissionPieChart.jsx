@@ -68,10 +68,10 @@ const EmissionPieChart = ({ data, comparisonData, compareMode }) => {
     comparisonData.forEach(item => {
         const breakdown = item.calculatedEmissions?.breakdown;
         if(breakdown) {
-            avgBreakdown.fossilFuels += breakdown.fossilFuels || 0;
-            avgBreakdown.mobileSources += breakdown.mobileSources || 0;
-            avgBreakdown.electricity += breakdown.electricity || 0;
-            avgBreakdown.heat += breakdown.heat || 0;
+            avgBreakdown.fossilFuels += (breakdown.fossilFuels || 0);
+            avgBreakdown.mobileSources += (breakdown.mobileSources || 0);
+            avgBreakdown.electricity += (breakdown.electricity || 0);
+            avgBreakdown.heat += (breakdown.heat || 0);
         }
     });
 

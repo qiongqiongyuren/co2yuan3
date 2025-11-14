@@ -90,6 +90,22 @@ async function calculateEmissions(activityData) {
     emissionIntensityByArea,
     emissionIntensityByPerson
   };
+  console.log('Calculated Emissions:', {
+    breakdown, // Detailed breakdown for charts
+    totalDirect,
+    totalIndirect,
+    totalEmissions,
+    emissionIntensityByArea,
+    emissionIntensityByPerson
+  }); // 添加日志
+  return {
+    breakdown, // Detailed breakdown for charts
+    totalDirect,
+    totalIndirect,
+    totalEmissions,
+    emissionIntensityByArea,
+    emissionIntensityByPerson
+  };
 }
 
 module.exports = { calculateEmissions };

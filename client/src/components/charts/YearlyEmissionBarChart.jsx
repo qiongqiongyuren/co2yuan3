@@ -22,20 +22,20 @@ const YearlyEmissionBarChart = ({ yearlyData, comparisonData, compareMode, curre
           type: 'bar',
           stack: 'total',
           emphasis: { focus: 'series' },
-          data: sortedData.map(d => (d.calculatedEmissions.breakdown.fossilFuels + d.calculatedEmissions.breakdown.mobileSources).toFixed(2))
+          data: sortedData.map(d => ((d.calculatedEmissions?.breakdown?.fossilFuels || 0) + (d.calculatedEmissions?.breakdown?.mobileSources || 0)).toFixed(2))
         },
         {
           name: '间接排放',
           type: 'bar',
           stack: 'total',
           emphasis: { focus: 'series' },
-          data: sortedData.map(d => (d.calculatedEmissions.breakdown.electricity + d.calculatedEmissions.breakdown.heat).toFixed(2))
+          data: sortedData.map(d => ((d.calculatedEmissions?.breakdown?.electricity || 0) + (d.calculatedEmissions?.breakdown?.heat || 0)).toFixed(2))
         },
         {
             name: '总排放',
             type: 'line',
             yAxisIndex: 0,
-            data: sortedData.map(d => d.calculatedEmissions.totalEmissions.toFixed(2)),
+            data: sortedData.map(d => (d.calculatedEmissions?.totalEmissions || 0).toFixed(2)),
         }
       ]
     };
@@ -67,20 +67,20 @@ const YearlyEmissionBarChart = ({ yearlyData, comparisonData, compareMode, curre
           type: 'bar',
           stack: 'total',
           emphasis: { focus: 'series' },
-          data: allData.map(d => (d.calculatedEmissions.breakdown.fossilFuels + d.calculatedEmissions.breakdown.mobileSources).toFixed(2))
+          data: allData.map(d => ((d.calculatedEmissions?.breakdown?.fossilFuels || 0) + (d.calculatedEmissions?.breakdown?.mobileSources || 0)).toFixed(2))
         },
         {
           name: '间接排放',
           type: 'bar',
           stack: 'total',
           emphasis: { focus: 'series' },
-          data: allData.map(d => (d.calculatedEmissions.breakdown.electricity + d.calculatedEmissions.breakdown.heat).toFixed(2))
+          data: allData.map(d => ((d.calculatedEmissions?.breakdown?.electricity || 0) + (d.calculatedEmissions?.breakdown?.heat || 0)).toFixed(2))
         },
         {
           name: '总排放',
           type: 'bar',
           emphasis: { focus: 'series' },
-          data: allData.map(d => d.calculatedEmissions.totalEmissions.toFixed(2))
+          data: allData.map(d => (d.calculatedEmissions?.totalEmissions || 0).toFixed(2))
         }
       ]
     };

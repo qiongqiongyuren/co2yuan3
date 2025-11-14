@@ -70,7 +70,7 @@ const ChartAnalysis = ({ selectedRecord, allData }) => {
                   <Typography variant="h6" align="center" sx={{ mb: 2 }}>排放构成</Typography>
                   <Box sx={{ height: '350px' }}> {/* 直接设置图表容器的固定高度 */}
                     <EmissionPieChart 
-                      data={selectedRecord.calculatedEmissions.breakdown} 
+                      data={selectedRecord.calculatedEmissions?.breakdown} 
                       comparisonData={comparisonData}
                       compareMode={compareMode}
                     />

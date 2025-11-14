@@ -26,8 +26,8 @@ const AnnualChangeLineChart = ({ yearlyData, compareMode }) => {
     const currentYearData = sortedData[i];
     const previousYearData = sortedData[i - 1];
     
-    const currentEmissions = currentYearData.calculatedEmissions.totalEmissions;
-    const previousEmissions = previousYearData.calculatedEmissions.totalEmissions;
+    const currentEmissions = currentYearData.calculatedEmissions?.totalEmissions || 0;
+    const previousEmissions = previousYearData.calculatedEmissions?.totalEmissions || 0;
 
     let changeRate = 0;
     if (previousEmissions > 0) {
